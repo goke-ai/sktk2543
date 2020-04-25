@@ -1,4 +1,4 @@
-function [x,fx,ea,iter,phi,T] = goldmin(f,xw, xu, es, maxit, dp, varargin)
+function [x,fx,ea,iter,phi,T] = goldmax(f,xw, xu, es, maxit, dp, varargin)
     if nargin < 3, error('at least 3 input arguments required'), end
     if nargin < 4 || isempty(es), es = 0.0001; end
     if nargin < 5 || isempty(maxit), maxit = 50; end
@@ -19,12 +19,15 @@ function [x,fx,ea,iter,phi,T] = goldmin(f,xw, xu, es, maxit, dp, varargin)
     Ea=[];
     
     while(1)
+        iter = iter+1;
+        
         d = round((phi-1)*(xu-xw),dp);
         x1=round(xw+d,dp);
         x2=round(xu-d,dp);
         f1=round(f(x1,varargin{:}),dp);
         f2=round(f(x2,varargin{:}),dp);
-        if f1 < f2
+        
+        if f1 > f2
             xopt = x1;
         else
             xopt = x2;
@@ -34,8 +37,8 @@ function [x,fx,ea,iter,phi,T] = goldmin(f,xw, xu, es, maxit, dp, varargin)
             ea = round((2-phi)*abs((xu-xw)/xopt)*100,dp);
         end
         
-        iter = iter+1;
-        i=iter+1;
+        
+        i=iter;
              
         I(i) = i;
         Xl(i) = xw;
@@ -48,7 +51,7 @@ function [x,fx,ea,iter,phi,T] = goldmin(f,xw, xu, es, maxit, dp, varargin)
         Xopt(i) = xopt;
         Ea(i) = ea;
         
-        if f1 < f2
+        if f1 > f2
             xopt = x1;
             xw = x2;
 %             x2 = x1;
